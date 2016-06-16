@@ -66,13 +66,14 @@
     xhr: function() {
       var _self = this
         , _open = xhr.prototype.open
-        , _send = xhr.prototype.send
-        , _method, _url, _timestamp;
+        , _send = xhr.prototype.send;
 
       xhr.prototype.open = function(method, url) {
-        _timestamp = new Date();
-        _method = method;
-        _url = url;
+        this._shData = {
+          timestamp: new Date(),
+          method: method,
+          url: url
+        }
         _open.apply(this, arguments);
       };
 
@@ -83,7 +84,7 @@
             try {
               var res
                 , status = response.target.status.toString()
-                , timeSpan = new Date() - _timestamp
+                , timeSpan = new Date() - self._shData.timestamp
                 , isError = /^[45]/.test(status.slice(0, -2));
               if (!isError) {
                 return;
@@ -93,7 +94,7 @@
               } catch(e) {
                 res = response.target.response.substring(0, 100);
               }
-              _self.format([_method, status, res, _url, timeSpan], 2);
+              _self.format([self._shData.method, status, res, self._shData.url, timeSpan], 2);
               _self.inject();
             } catch(e){}
           }
