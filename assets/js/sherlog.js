@@ -70,6 +70,7 @@
 
       xhr.prototype.open = function(method, url) {
         this._shData = {
+          location: win.location.toString(),
           timestamp: new Date(),
           method: method,
           url: url
@@ -94,7 +95,7 @@
               } catch(e) {
                 res = response.target.response.substring(0, 100);
               }
-              _self.format([self._shData.method, status, res, self._shData.url, timeSpan], 2);
+              _self.format([self._shData.location, self._shData.method, status, res, self._shData.url, timeSpan], 2);
               _self.inject();
             } catch(e){}
           }
@@ -118,6 +119,7 @@
       switch (this.type) {
         case 0:
           this.data = {
+            location: win.location.toString(),
             message : data[0],
             source  : data[1],
             line    : data[2],
@@ -127,16 +129,22 @@
           break;
 
         case 1:
-          this.data = (typeof data !== 'object') ? { _event : data } : data;
+          if (typeof data !== 'object') {
+            this.data = { _event : data };
+          } else {
+            data = JSON.parse(JSON.stringify(data));
+            data.location = win.location.toString();
+          }
           break;
 
         case 2:
           this.data = {
-            method        : data[0],
-            status        : data[1],
-            response      : data[2],
-            url           : data[3],
-            response_time : data[4]
+            location     : data[0],
+            method       : data[1],
+            status       : data[2],
+            response     : data[3],
+            url          : data[4],
+            response_time: data[5]
           };
           break;
       }
