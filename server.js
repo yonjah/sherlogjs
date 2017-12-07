@@ -32,19 +32,19 @@ var db = mongoose.connect(
   });
 
 // ensure that bower packages are installed
-fs.exists('bower_components', function (exists) { 
-  if (!exists) { 
+fs.exists('bower_components', function (exists) {
+  if (!exists) {
     console.log('Bower packages are missing. Please run `bower install`'.red);
     process.exit(1);
-  } 
-}); 
+  }
+});
 
 // ensure that the required gulp task is completed
-fs.exists('public/js/sherlog.min.js', function (exists) { 
-  if (!exists) { 
+fs.exists('public/js/sherlog.min.js', function (exists) {
+  if (!exists) {
     console.log('Assets are missing. Please run `gulp`'.red);
     process.exit(1);
-  } 
+  }
 });
 
 passport.serializeUser(function (user, done) {
@@ -67,7 +67,7 @@ var isAuthenticated = function(req, res, next) {
     return next();
   }
   res.redirect('/login');
-};  
+};
 
 // express setup
 app.use(bodyParser());
@@ -75,7 +75,7 @@ app.use(cookieParser());
 app.use(session({
   secret: __dirname.replace(/[\/]/g, ''),
   maxAge: new Date(Date.now() + 3600000),
-  store: new mongoStore({mongoose_connection: db}),
+  store: new mongoStore({mongooseConnection: db}),
   saveUninitialized: true,
   resave: true
 }));
